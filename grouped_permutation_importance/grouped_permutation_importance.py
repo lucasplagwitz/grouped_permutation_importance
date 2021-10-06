@@ -1,4 +1,4 @@
-# The code is 99.9 percent from scikit learn.
+# The code is 99 percent from scikit learn.
 import numpy as np
 from joblib import Parallel
 
@@ -9,12 +9,34 @@ from sklearn.utils import check_array
 from sklearn.utils.fixes import delayed
 from sklearn.inspection._permutation_importance import _weights_scorer
 from grouped_permutation_importance._adapted_permutation_importance import _calculate_permutation_scores
+from sklearn.base import clone
 
 def grouped_permutation_importance(estimator, X, y, *, scoring=None, n_repeats=5, idxs=None,
-                                   n_jobs=None, random_state=None, sample_weight=None):
+                                   n_jobs=None, random_state=None, sample_weight=None, cv=None, perm_set=None):
 
     if not hasattr(X, "iloc"):
         X = check_array(X, force_all_finite='allow-nan', dtype=None)
+
+    if cv is not None:
+        if perm_set not in ["train", "test"]:
+            raise AttributeError("Parameter cv needs perm_set and set to 'train' or 'test'.")
+        importances = np.empty((len(idxs), 0))
+        for train_idx, test_idx in cv.split(X, y):
+            model = clone(estimator)
+            model.fit(X[train_idx], y[train_idx])
+            if perm_set == "train":
+                idx = train_idx
+            else:
+                idx = test_idx
+            importances = np.concatenate([importances, grouped_permutation_importance(model, X[idx], y[idx], scoring=scoring,
+                                                                                      n_repeats=n_repeats, idxs=idxs,
+                                                  n_jobs=n_jobs, random_state=None, sample_weight=None, cv=None)["importances"]], axis=1)
+        return Bunch(importances_mean=np.mean(importances, axis=1),
+                     importances_std=np.std(importances, axis=1),
+                     importances=importances)
+    else:
+        if perm_set is not None:
+            raise AttributeError("Parameter perm_set needs cv.")
 
     # Precompute random seed from the random state to be used
     # to get a fresh independent RandomState instance for each
@@ -28,7 +50,7 @@ def grouped_permutation_importance(estimator, X, y, *, scoring=None, n_repeats=5
     baseline_score = _weights_scorer(scorer, estimator, X, y, sample_weight)
 
     scores = Parallel(n_jobs=n_jobs)(delayed(_calculate_permutation_scores)(
-        estimator, X, y, sample_weight, col_idx, random_seed, n_repeats, scorer
+            estimator, X, y, sample_weight, col_idx, random_seed, n_repeats, scorer
     ) for col_idx in idxs)
 
     importances = baseline_score - np.array(scores)
