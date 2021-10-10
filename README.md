@@ -6,6 +6,10 @@ This repository allows a simple analysis to calculate the influence
 of a feature group on the overall result. This is done by a slight 
 modification of the permutation importance of scikit-learn. 
 
+Install via pip
+
+    pip install git+https://github.com/lucasplagwitz/grouped_permutation_importance
+
 ```python
 from grouped_permutation_importance import grouped_permutation_importance
 
