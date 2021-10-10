@@ -1,1 +1,1 @@
-from grouped_permutation_importance import grouped_permutation_importance
+from grouped_permutation_importance.inspection import grouped_permutation_importance

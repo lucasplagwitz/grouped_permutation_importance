@@ -7,6 +7,8 @@ of a feature group on the overall result. This is done by a slight
 modification of the permutation importance of scikit-learn. 
 
 ```python
+from grouped_permutation_importance import grouped_permutation_importance
+
 data = load_breast_cancer()
 feature_names = data["feature_names"].tolist()
 X, y = data["data"], data["target"]

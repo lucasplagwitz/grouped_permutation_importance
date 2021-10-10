@@ -4,7 +4,7 @@ from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.datasets import make_classification
 
-from grouped_permutation_importance.grouped_permutation_importance import grouped_permutation_importance
+from grouped_permutation_importance import grouped_permutation_importance
 
 
 X, y = make_classification(n_samples=300, n_features=10, n_informative=10, n_redundant=0, random_state=42)

@@ -1,5 +1,5 @@
 from sklearn.datasets import load_breast_cancer
-from grouped_permutation_importance.grouped_permutation_importance import grouped_permutation_importance
+from grouped_permutation_importance import grouped_permutation_importance
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MinMaxScaler
@@ -12,7 +12,8 @@ feature_names = data["feature_names"].tolist()
 X, y = data["data"], data["target"]
 
 idxs = []
-columns = ["radius", "texture", "perimeter", "area", "smoothness", "compactness", "concavity",  "concave", "symmetry", "fractal"]
+columns = ["radius", "texture", "perimeter", "area", "smoothness",
+           "compactness", "concavity",  "concave", "symmetry", "fractal"]
 for key in columns:
     idxs.append([x for (x, y) in enumerate(feature_names) if key in y])
 

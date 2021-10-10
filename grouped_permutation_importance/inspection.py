@@ -11,6 +11,7 @@ from sklearn.inspection._permutation_importance import _weights_scorer
 from grouped_permutation_importance._adapted_permutation_importance import _calculate_permutation_scores
 from sklearn.base import clone
 
+
 def grouped_permutation_importance(estimator, X, y, *, scoring=None, n_repeats=5, idxs=None,
                                    n_jobs=None, random_state=None, sample_weight=None, cv=None, perm_set=None):
 
