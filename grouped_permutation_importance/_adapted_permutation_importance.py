@@ -22,7 +22,10 @@ def _calculate_permutation_scores(estimator, X, y, sample_weight, col_idx,
         if hasattr(X_permuted, "iloc"):
             raise NotImplementedError("DataFrames not yet implemented.")
         else:
-            X_permuted[:, col_idx] = X_permuted[[[x] for x in shuffling_idx], col_idx]  # shuffle every column with own rs/seed?
+            #for t in col_idx:
+            #    random_state.shuffle(shuffling_idx)
+            #    X_permuted[:, t] = X_permuted[:,t][[[x] for x in shuffling_idx]].ravel()  # shuffle every column with own rs/seed?
+            X_permuted[:, col_idx] = X_permuted[[[x] for x in shuffling_idx], col_idx]
         feature_score = _weights_scorer(
             scorer, estimator, X_permuted, y, sample_weight
         )

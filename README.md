@@ -42,3 +42,11 @@ File "examples/make_class.py" shows a small example using simulated feature-grou
 <p align="center">
 <img src="./demo/make_class.png">
 </p>
+
+## Model interpretation
+
+File "examples/brain_atlas.py" shows a small example evaluation brain regions as feature-groups. This shows the possibility of interpretability of a ML model.
+
+<p align="center">
+<img src="./demo/brain_atlas.png">
+</p>
