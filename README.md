@@ -37,7 +37,7 @@ r = grouped_permutation_importance(pipe, X, y, idxs=idxs, n_repeats=50, random_s
 
 ## Simulation
 
-File "examples/make_class.py" shows a small example using simulated feature-groups. This demonstrates the expressiveness of the method whereas a simple aggregation of single feature weights is refuted.
+File "examples/make_class.py" shows a small example using simulated feature groups. This demonstrates the expressiveness of the method whereas a simple aggregation of single feature weights is refuted.
 
 <p align="center">
 <img src="./demo/make_class.png">
@@ -45,7 +45,7 @@ File "examples/make_class.py" shows a small example using simulated feature-grou
 
 ## Model interpretation
 
-File "examples/brain_atlas.py" shows a small example evaluation brain regions as feature-groups. This shows the possibility of interpretability of a ML model.
+File "examples/brain_atlas.py" shows a small example of how to evaluate brain regions as feature groups. This shows the possibility of interpretability of a ML model.
 
 <p align="center">
 <img src="./demo/brain_atlas.png">
