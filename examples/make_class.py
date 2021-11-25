@@ -1,51 +1,65 @@
-import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.model_selection import StratifiedShuffleSplit
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
 from sklearn.datasets import make_classification
 
 from grouped_permutation_importance import grouped_permutation_importance
 
+params = {'text.usetex': True,
+          'font.size': 16,
+          'font.family': 'sans-serif',
+          'figure.figsize': (17,7)
+          }
+plt.rcParams.update(params)
 
 X, y = make_classification(n_samples=300, n_features=10, n_informative=10, n_redundant=0, random_state=42)
 X = np.concatenate([X, np.random.normal(size=(len(X), 90))], axis=1)
+
+fig = plt.Figure()
 
 for i, split in enumerate([2, 8, 10]):
 
     first = range(split)
     second = range(split, 100)
-    columns = [f"{split*10}% informative", f"{(10-split)*10}% informative"]
+    columns = [f"{split*10}\% \n ({len(first)})", f"{(10-split)*10}\% \n ({len(second)})"]
 
+    cv = StratifiedShuffleSplit(20, test_size=0.2)
 
-    cv = StratifiedShuffleSplit(5, test_size=0.2)
-    test_forest_imp = np.empty((len(columns), 0))
-    bacc = []
-
-    model = RandomForestClassifier(class_weight="balanced")
+    model = SVC(class_weight="balanced")
 
     r_train = grouped_permutation_importance(model, X, y, idxs=[first, second],
-                                             n_repeats=30, random_state=0, scoring="balanced_accuracy",
+                                             n_repeats=50, random_state=0, scoring="balanced_accuracy",
                                              n_jobs=5, cv=cv, perm_set="train")["importances"]
 
 
     r_test = grouped_permutation_importance(model, X, y, idxs=[first, second],
-                                            n_repeats=30, random_state=0, scoring="balanced_accuracy",
+                                            n_repeats=50, random_state=0, scoring="balanced_accuracy",
                                             n_jobs=5, cv=cv, perm_set="test")["importances"]
 
+    # -- only plotting
+    plt.subplot(1, 3, i+1)
+    sorted_idx = list(range(len(columns)))
+    bp1 = plt.boxplot(r_train[sorted_idx].T, patch_artist=True,
+               vert=True, labels=["", ""], positions = [2, 5])
+    for patch, color in zip(bp1['boxes'], ["blue"]*2):
+        patch.set_facecolor(color)
+        patch.set_alpha(.6)
+    bp2 = plt.boxplot(r_test[sorted_idx].T, patch_artist=True,
+                vert=True, labels=["", ""], positions = [3, 6])
+    for patch, color in zip(bp2['boxes'], ["green"]*2):
+        patch.set_facecolor(color)
+        patch.set_alpha(.7)
+    plt.xticks([2.5, 5.5], columns)
+    plt.ylim([-0.1, 0.6])
+    if i>0:
+        plt.yticks([])
+    else:
+        plt.ylabel("information gain")
+    if i == 2:
+        plt.legend([bp1["boxes"][0], bp2["boxes"][0]], [r'train set', r'test set'])
+    if i == 1:
+        plt.xlabel("of all informative columns \n (number of columns)", labelpad=20)
 
-    sorted_idx = list(range(len(columns)))[::-1]
-
-    plt.subplot(3, 2, 1+2*i)
-    plt.boxplot(r_train[sorted_idx].T,
-               vert=False, labels=np.array(columns)[sorted_idx])
-    if i == 0:
-        plt.title("Perm-Imp (train set)")
-
-    plt.subplot(3, 2, 2 + 2*i)
-    sorted_idx = list(range(len(columns)))[::-1]
-    plt.boxplot(r_test[sorted_idx].T,
-               vert=False, labels=np.array(columns)[sorted_idx])
-    if i == 0:
-        plt.title("Perm-Imp (test set)")
 plt.tight_layout()
 plt.savefig("../demo/make_class.png")

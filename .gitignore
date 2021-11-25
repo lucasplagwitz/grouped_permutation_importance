@@ -1,1 +1,4 @@
 examples/brain_regions.npz
+paper
+.idea/*
+*/__pycache__/*
