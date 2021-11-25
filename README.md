@@ -28,7 +28,7 @@ pipe = Pipeline([("MinMax", MinMaxScaler()),  ("SVC", SVC())])
 
 r = grouped_permutation_importance(pipe, X, y, idxs=idxs, n_repeats=50, random_state=0, 
                                    scoring="balanced_accuracy", n_jobs=5, cv=cv, 
-                                   perm_set="train")
+                                   perm_set="test")
 ```
 
 <p align="center">
