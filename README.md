@@ -1,10 +1,13 @@
 # Grouped Permutation Importance
 
-The interpretability of machine learning models is a common task. 
-In many domains datasets consist of different feature sources.  
-This repository allows a simple analysis to calculate the influence 
-of a feature group on the overall result. This is done by a slight 
-modification of the permutation importance of scikit-learn. 
+Understanding the fundamentals of a decision-making process is, for most purposes, an essential
+step in the field of machine learning. In this context, the analysis of predefined groups of 
+features can provide important indications for comprehending and improving the prediction.
+This repository extend the univariate permutation
+importance to a grouped version for evaluating the
+influence of whole feature subsets in a machine
+learning model. This is done by a slight 
+modification of the [permutation importance of scikit-learn](https://scikit-learn.org/stable/modules/permutation_importance.html). 
 
 Install via pip
 
@@ -37,7 +40,7 @@ r = grouped_permutation_importance(pipe, X, y, idxs=idxs, n_repeats=50, random_s
 
 ## Simulation
 
-File "examples/make_class.py" shows a small example using simulated feature groups. This demonstrates the expressiveness of the method whereas a simple aggregation of single feature weights is refuted.
+In the file "examples/make_class.py" a small simulation is shown to verify correctness. Based on [scikit-learns make_classification method](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_classification.html), different informative subsets are analyzed.
 
 <p align="center">
 <img src="./demo/make_class.png">
@@ -45,7 +48,7 @@ File "examples/make_class.py" shows a small example using simulated feature grou
 
 ## Model interpretation
 
-File "examples/brain_atlas.py" shows a small example of how to evaluate brain regions as feature groups. This shows the possibility of interpretability of a ML model.
+The file "examples/brain_atlas.py" demonstrates a neuroimaging example for rating brain regions depending on the target variable (age, CDR, biological sex). 
 
 <p align="center">
 <img src="./demo/brain_atlas.png">
