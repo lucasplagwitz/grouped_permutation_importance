@@ -1,4 +1,4 @@
-# The code is 99 percent from scikit learn.
+# Code is based on scikit-learns permutation importance.
 import numpy as np
 from joblib import Parallel
 
@@ -8,21 +8,25 @@ from sklearn.utils import check_random_state
 from sklearn.utils import check_array
 from sklearn.utils.fixes import delayed
 from sklearn.inspection._permutation_importance import _weights_scorer
-from grouped_permutation_importance._adapted_permutation_importance import _calculate_permutation_scores
+from grouped_permutation_importance._adapted_permutation_importance import \
+    _calculate_permutation_scores
 from sklearn.base import clone
 from sklearn.metrics import get_scorer
 
 
-def grouped_permutation_importance(estimator, X, y, *, scoring=None, n_repeats=5, idxs=None,
-                                   n_jobs=None, random_state=None, sample_weight=None, cv=None, perm_set=None, verbose=0,
-                                   min_performance=-1):
+def grouped_permutation_importance(estimator, X, y, *, scoring=None,
+                                   n_repeats=5, idxs=None, n_jobs=None,
+                                   random_state=None, sample_weight=None,
+                                   cv=None, perm_set=None, verbose=0,
+                                   min_performance=-1, mode="abs"):
 
     if not hasattr(X, "iloc"):
         X = check_array(X, force_all_finite='allow-nan', dtype=None)
 
     if cv is not None:
         if perm_set not in ["train", "test"]:
-            raise AttributeError("Parameter cv needs perm_set and set to 'train' or 'test'.")
+            raise AttributeError("Parameter cv needs perm_set and set "
+                                 "to 'train' or 'test'.")
         importances = np.empty((len(idxs), 0))
         for train_idx, test_idx in cv.split(X, y):
             model = clone(estimator)
@@ -34,15 +38,30 @@ def grouped_permutation_importance(estimator, X, y, *, scoring=None, n_repeats=5
 
             added = True
             if min_performance > 0:
-                perf = get_scorer(scoring)._score_func(model.predict(X[test_idx]), y[test_idx])
+                perf = get_scorer(scoring). \
+                    _score_func(model.predict(X[test_idx]), y[test_idx])
                 if perf < min_performance:
                     added = False
             if added:
-                importances = np.concatenate([importances, grouped_permutation_importance(model, X[idx], y[idx], scoring=scoring,
-                                                                                          n_repeats=n_repeats, idxs=idxs,
-                                                      n_jobs=n_jobs, random_state=None, sample_weight=None, cv=None)["importances"]], axis=1)
+                importances = np.concatenate(
+                    [importances,
+                     grouped_permutation_importance(model, X[idx], y[idx],
+                                                    scoring=scoring,
+                                                    n_repeats=n_repeats,
+                                                    idxs=idxs, n_jobs=n_jobs,
+                                                    random_state=None,
+                                                    sample_weight=None,
+                                                    cv=None,
+                                                    mode=mode)["importances"]],
+                    axis=1)
             if verbose:
-                print(f"Test-Score: {get_scorer(scoring)._score_func(model.predict(X[test_idx]), y[test_idx])}")
+                perf = get_scorer(scoring). \
+                    _score_func(model.predict(X[test_idx]), y[test_idx])
+                print(f"Test-Score: {perf}")
+
+        if mode == "rel":
+            importances = importances / np.sum(np.mean(importances, axis=1))
+
         return Bunch(importances_mean=np.mean(importances, axis=1),
                      importances_std=np.std(importances, axis=1),
                      importances=importances)
@@ -62,7 +81,8 @@ def grouped_permutation_importance(estimator, X, y, *, scoring=None, n_repeats=5
     baseline_score = _weights_scorer(scorer, estimator, X, y, sample_weight)
 
     scores = Parallel(n_jobs=n_jobs)(delayed(_calculate_permutation_scores)(
-            estimator, X, y, sample_weight, col_idx, random_seed, n_repeats, scorer
+            estimator, X, y, sample_weight, col_idx,
+        random_seed, n_repeats, scorer
     ) for col_idx in idxs)
 
     importances = baseline_score - np.array(scores)

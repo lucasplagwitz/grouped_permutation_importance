@@ -31,7 +31,8 @@ for key in columns:
     idxs.append([x for (x, y) in enumerate(feature_names) if key in y])
 
 r = grouped_permutation_importance(model, X, y, idxs=idxs,
-                                   n_repeats=50, random_state=0, scoring="balanced_accuracy", n_jobs=5,
+                                   n_repeats=100, random_state=0,
+                                   scoring="balanced_accuracy", n_jobs=5,
                                    cv=cv, perm_set="test")
 sorted_idx = r.importances_mean.argsort()[::-1]
 box = ax[0].boxplot(r.importances[sorted_idx].T,
@@ -50,7 +51,8 @@ idxs = []
 for key in columns:
     idxs.append([x for (x, y) in enumerate(feature_names) if key in y])
 r = grouped_permutation_importance(model, X, y, idxs=idxs,
-                                   n_repeats=50, random_state=0, scoring="balanced_accuracy", n_jobs=5,
+                                   n_repeats=50, random_state=0,
+                                   scoring="balanced_accuracy", n_jobs=5,
                                    cv=cv, perm_set="test")
 sorted_idx = r.importances_mean.argsort()[::-1]
 box = ax[1].boxplot(r.importances[sorted_idx].T,
