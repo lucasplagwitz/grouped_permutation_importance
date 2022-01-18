@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.model_selection import StratifiedShuffleSplit
+from sklearn.model_selection import RepeatedStratifiedKFold
 from sklearn.svm import SVC
 from sklearn.datasets import make_classification
 
@@ -27,7 +27,7 @@ for i, split in enumerate([2, 8, 10]):
     columns = [f"{split*10}\% \n ({len(first)})",
                f"{(10-split)*10}\% \n ({len(second)})"]
 
-    cv = StratifiedShuffleSplit(25, test_size=0.2)
+    cv = RepeatedStratifiedKFold()
 
     model = SVC(class_weight="balanced")
 

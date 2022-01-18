@@ -25,7 +25,7 @@ columns = ["mean", "error", "worst"]
 for key in columns:
     idxs.append([x for (x, y) in enumerate(feature_names) if key in y])
 
-cv=StratifiedShuffleSplit(n_splits=10, test_size=0.2)
+cv = RepeatedStratifiedKFold()
 pipe = Pipeline([("MinMax", MinMaxScaler()),  ("SVC", SVC())])
 
 

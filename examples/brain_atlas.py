@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
-from sklearn.model_selection import StratifiedShuffleSplit
+from sklearn.model_selection import RepeatedStratifiedKFold
 import matplotlib.pyplot as plt
 
 # please install nilearn
@@ -54,7 +54,7 @@ else:
     y_cdr = data["y_cdr"]
     e_index = data["e_index"]
 
-cv=StratifiedShuffleSplit(n_splits=25, test_size=0.2)
+cv = RepeatedStratifiedKFold()
 imp = []
 for plot_i, y in enumerate([y_age, y_cdr, y_sex]):
 
