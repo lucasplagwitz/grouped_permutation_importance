@@ -53,3 +53,12 @@ The file "examples/brain_atlas.py" demonstrates a neuroimaging example for ratin
 <p align="center">
 <img src="./demo/brain_atlas.png">
 </p>
+
+## Citing
+
+If you use the Grouped Permutation Importance in a scientific publication, we would appreciate
+citations to the following [paper](https://ebooks.iospress.nl/volumearticle/59564):
+```
+Lucas Plagwitz, Alexander Brenner, Michael Fujarski, and Julian Varghese. Supporting AI-Explainability by Analyzing Feature Subsets in a Machine Learning Model.
+Studies in Health Technology and Informatics, Volume 294: Challenges of Trustable AI and Added-Value on Health. doi:10.3233/SHTI220406
+```
